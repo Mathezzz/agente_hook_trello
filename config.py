@@ -15,10 +15,12 @@ def get_env(name: str, required: bool = True, default=None):
 TRELLO_API_KEY = get_env("TRELLO_API_KEY", required=False)
 TRELLO_TOKEN = get_env("TRELLO_TOKEN", required=False)
 TRELLO_LIST_ID = get_env("TRELLO_LIST_ID", required=False)
+TRELLO_NEXT_LIST_ID = get_env("TRELLO_NEXT_LIST_ID", required=False)
 
 # LLM
 LLM_API_KEY = get_env("LLM_API_KEY", required=False)
 LLM_MODEL = get_env("LLM_MODEL", default="sabiazinho-3")
+LLM_BASE_URL = get_env("LLM_BASE_URL", required=False)
 
 # Logging
 LOG_LEVEL = get_env("LOG_LEVEL", default="INFO")
