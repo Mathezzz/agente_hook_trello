@@ -28,3 +28,12 @@ class TrelloClient:
         logging.info(f"Adicionando comentário no card {card_id}")
         response = requests.post(url, params=params, timeout=30)
         response.raise_for_status()
+
+    def move_card_to_list(self, card_id: str, list_id: str):
+        url = f"{self.base_url}/cards/{card_id}"
+        params = {**self.auth, "idList": list_id}
+
+        logging.info(f"Movendo card {card_id} para lista {list_id}")
+        response = requests.put(url, params=params, timeout=30)
+        response.raise_for_status()
+
