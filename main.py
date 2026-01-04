@@ -1,31 +1,48 @@
 import logging
 from logs.logger import setup_logger
+
 from trello.client import TrelloClient
 from trello.parser import parse_card
-from config import TRELLO_LIST_ID
+from docs.loader import load_docs
+from agent.llm_client import get_llm_client
+from agent.reviewer import analyze_ticket
 
-TEST_COMMENT = """
-🤖 Revisão automática (teste)
+from config import TRELLO_LIST_ID, TRELLO_NEXT_LIST_ID
 
-Este é um comentário de teste da V1 do AI Backlog Reviewer.
-Nenhuma ação foi tomada neste ticket.
-"""
+COMMENT_PREFIX = "🤖 Revisão automática de backlog\n\n"
 
 def main():
-    logging.info("Iniciando AI Backlog Reviewer - Pacote 2")
+    logging.info("Iniciando AI Backlog Reviewer - V1")
 
-    if not TRELLO_LIST_ID:
-        raise RuntimeError("TRELLO_LIST_ID não configurado no .env")
+    if not TRELLO_LIST_ID or not TRELLO_NEXT_LIST_ID:
+        raise RuntimeError("IDs de listas do Trello não configurados")
 
     trello = TrelloClient()
-    cards = trello.get_cards_from_list(TRELLO_LIST_ID)
+    llm_client = get_llm_client()
+    boas_praticas = load_docs()
 
+    cards = trello.get_cards_from_list(TRELLO_LIST_ID)
     logging.info(f"{len(cards)} cards encontrados")
 
     for card in cards:
         parsed = parse_card(card)
-        trello.add_comment(parsed["id"], TEST_COMMENT)
-        logging.info(f"Comentário adicionado no card: {parsed['name']}")
+
+        try:
+            comment_body = analyze_ticket(
+                llm_client,
+                parsed,
+                boas_praticas
+            )
+
+            full_comment = COMMENT_PREFIX + comment_body
+
+            trello.add_comment(parsed["id"], full_comment)
+            trello.move_card_to_list(parsed["id"], TRELLO_NEXT_LIST_ID)
+
+            logging.info(f"Card processado com sucesso: {parsed['name']}")
+
+        except Exception as e:
+            logging.error(f"Erro ao processar card {parsed['name']}: {e}")
 
 if __name__ == "__main__":
     setup_logger()
