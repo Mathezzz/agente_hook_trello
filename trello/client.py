@@ -1,6 +1,6 @@
 import requests
 import logging
-from config import TRELLO_API_KEY, TRELLO_TOKEN
+from config import TRELLO_API_KEY, TRELLO_TOKEN, TRELLO_LIST_ID
 
 class TrelloClient:
     def __init__(self):
@@ -12,6 +12,7 @@ class TrelloClient:
             "key": TRELLO_API_KEY,
             "token": TRELLO_TOKEN
         }
+        self.list_id = TRELLO_LIST_ID
 
     def get_cards_from_list(self, list_id: str):
         url = f"{self.base_url}/lists/{list_id}/cards"
@@ -35,5 +36,37 @@ class TrelloClient:
 
         logging.info(f"Movendo card {card_id} para lista {list_id}")
         response = requests.put(url, params=params, timeout=30)
+        response.raise_for_status()
+
+    def register_webhook(self, callback_url: str):
+        """Registra um webhook para novos cards adicionados à lista"""
+        url = f"{self.base_url}/webhooks"
+        params = {
+            **self.auth,
+            "callbackURL": callback_url,
+            "idModel": self.list_id,
+            "description": "Webhook para novos cards"
+        }
+
+        logging.info(f"Registrando webhook para lista {self.list_id}")
+        response = requests.post(url, params=params, timeout=30)
+        response.raise_for_status()
+        return response.json()
+
+    def get_webhooks(self):
+        """Lista todos os webhooks registrados"""
+        url = f"{self.base_url}/webhooks"
+        
+        logging.info("Listando webhooks")
+        response = requests.get(url, params=self.auth, timeout=30)
+        response.raise_for_status()
+        return response.json()
+
+    def delete_webhook(self, webhook_id: str):
+        """Deleta um webhook registrado"""
+        url = f"{self.base_url}/webhooks/{webhook_id}"
+        
+        logging.info(f"Deletando webhook {webhook_id}")
+        response = requests.delete(url, params=self.auth, timeout=30)
         response.raise_for_status()
 
