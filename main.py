@@ -42,6 +42,7 @@ def process_card(card_id: str):
         trello_client.add_comment(parsed["id"], full_comment)
         trello_client.move_card_to_list(parsed["id"], TRELLO_NEXT_LIST_ID)
 
+        logging.info(f"Comentário adicionado: {full_comment}")
         logging.info(f"Card processado com sucesso: {parsed['name']}")
 
     except Exception as e:
