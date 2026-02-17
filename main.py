@@ -64,7 +64,7 @@ def webhook():
         action = data.get("action", {})
         action_type = action.get("type")
 
-        if action_type == "addCardToList":
+        if action_type in ["addCardToList", "updateCard"]:
             card_id = action.get("data", {}).get("card", {}).get("id")
             if card_id:
                 process_card(card_id)
@@ -81,7 +81,7 @@ def health():
     return jsonify({"status": "ok"}), 200
 
 def main():
-    global trello_client, llm_client, boas_praticas
+    global trello_client, llm_client
     
     logging.info("Iniciando AI Backlog Reviewer - Webhook Mode")
 
