@@ -7,7 +7,7 @@ from trello.parser import parse_card
 from agent.llm_client import get_llm_client
 from agent.reviewer import analyze_ticket
 
-from config import TRELLO_NEXT_LIST_ID, WEBHOOK_PORT, WEBHOOK_URL
+from config import TRELLO_NEXT_LIST_ID, WEBHOOK_PORT, TRELLO_LIST_ID
 
 COMMENT_PREFIX = "🤖 Revisão automática de backlog\n\n"
 
@@ -67,7 +67,10 @@ def webhook():
 
         if action_type in ["addCardToList", "updateCard"]:
             card_id = action.get("data", {}).get("card", {}).get("id")
-            if card_id:
+            list_id = action.get("data", {}).get("list", {}).get("id")
+
+            # Se encontrar o id e estiver na lista de origem, fazer comentário e mover card
+            if card_id and list_id == TRELLO_LIST_ID:
                 process_card(card_id)
 
         return jsonify({"status": "ok"}), 200
