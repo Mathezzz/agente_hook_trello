@@ -47,9 +47,11 @@ def process_card(card_id: str):
     except Exception as e:
         logging.error(f"Erro ao processar card {card_id}: {e}")
 
-@app.route("/webhook", methods=["POST"])
+@app.route("/webhook", methods=["GET", "POST"])
 def webhook():
     """Endpoint que recebe eventos do webhook do Trello"""
+    if request.method == "GET":
+        return jsonify({"status": "ok"}), 200
     try:
         data = request.json
         

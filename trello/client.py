@@ -40,7 +40,7 @@ class TrelloClient:
 
     def register_webhook(self, callback_url: str):
         """Registra um webhook para novos cards adicionados à lista"""
-        url = f"{self.base_url}/webhooks"
+        url = f"{self.base_url}/webhooks/"
         params = {
             **self.auth,
             "callbackURL": callback_url,
