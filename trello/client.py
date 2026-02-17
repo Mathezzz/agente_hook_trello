@@ -48,7 +48,7 @@ class TrelloClient:
             "description": "Webhook para novos cards"
         }
 
-        logging.info(f"Registrando webhook para lista {self.list_id}")
+        logging.info(f"Registrando webhook para:\n\nlista: {self.list_id}\nTrelloURL: {url}\ncallbackURL: {callback_url}")
         response = requests.post(url, params=params, timeout=30)
         response.raise_for_status()
         return response.json()
