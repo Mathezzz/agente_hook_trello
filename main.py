@@ -1,6 +1,6 @@
 import logging
-import requests
-from flask import Flask, request, jsonify
+import requests # type: ignore
+from flask import Flask, request, jsonify # type: ignore
 from logs.logger import setup_logger
 from trello.client import TrelloClient
 from trello.parser import parse_card
