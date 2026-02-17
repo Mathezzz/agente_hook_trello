@@ -14,7 +14,6 @@ COMMENT_PREFIX = "🤖 Revisão automática de backlog\n\n"
 app = Flask(__name__)
 trello_client = None
 llm_client = None
-boas_praticas = None
 
 def process_card(card_id: str):
     """Processa um card e adiciona comentário + move para próxima lista"""
@@ -86,7 +85,6 @@ def main():
 
     trello_client = TrelloClient()
     llm_client = get_llm_client()
-    boas_praticas = load_docs()
 
     # Registra o webhook
     try:
