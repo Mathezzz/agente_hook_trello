@@ -86,19 +86,8 @@ def main():
     if not TRELLO_NEXT_LIST_ID:
         raise RuntimeError("ID da próxima lista do Trello não configurado")
 
-    if not WEBHOOK_URL:
-        raise RuntimeError("WEBHOOK_URL não configurada")
-
     trello_client = TrelloClient()
     llm_client = get_llm_client()
-
-    # Registra o webhook
-    try:
-        webhook_response = trello_client.register_webhook(WEBHOOK_URL)
-        logging.info(f"Webhook registrado com sucesso: {webhook_response}")
-    except Exception as e:
-        logging.error(f"Erro ao registrar webhook: {e}")
-        raise
 
     # Inicia o servidor Flask
     logging.info(f"Iniciando servidor webhook na porta {WEBHOOK_PORT}")
