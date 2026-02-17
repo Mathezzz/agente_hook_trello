@@ -1,0 +1,1 @@
+# Arquivo vazio para tornar logs um pacote Python. Código em logger.py
