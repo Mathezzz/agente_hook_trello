@@ -6,7 +6,6 @@ venv/
 .venv/
 .git/
 *.log
-logs/
 instance/
 build/
 dist/

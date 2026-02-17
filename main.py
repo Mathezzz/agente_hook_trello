@@ -1,5 +1,6 @@
 import logging
 import requests # type: ignore
+from logs.logger import setup_logger
 from flask import Flask, request, jsonify # type: ignore
 from trello.client import TrelloClient
 from trello.parser import parse_card
@@ -10,11 +11,11 @@ from config import TRELLO_NEXT_LIST_ID, WEBHOOK_PORT, WEBHOOK_URL
 
 COMMENT_PREFIX = "🤖 Revisão automática de backlog\n\n"
 
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
-logger = logging.getLogger(__name__)
+# logging.basicConfig(
+#     level=logging.INFO,
+#     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+# )
+# logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 trello_client = None
